@@ -1,247 +1,242 @@
-"use strict";
+﻿"use strict";
 
-const dropZone      = document.getElementById("dropZone");
-const fileInput     = document.getElementById("fileInput");
-const dzIdle        = document.getElementById("dzIdle");
-const dzPreview     = document.getElementById("dzPreview");
-const previewImg    = document.getElementById("previewImg");
-const generateBtn   = document.getElementById("generateBtn");
-const errorBanner   = document.getElementById("errorBanner");
-const errorMsg      = document.getElementById("errorMsg");
-const loadingOverlay= document.getElementById("loadingOverlay");
+const dropZone         = document.getElementById("dropZone");
+const fileInput        = document.getElementById("fileInput");
+const dzIdle           = document.getElementById("dzIdle");
+const dzPreview        = document.getElementById("dzPreview");
+const previewThumb     = document.getElementById("previewThumb");
+const previewName      = document.getElementById("previewName");
+const previewSize      = document.getElementById("previewSize");
+const browseLink       = document.getElementById("browseLink");
+const clearBtn         = document.getElementById("clearBtn");
+const generateBtn      = document.getElementById("generateBtn");
+const errorBanner      = document.getElementById("errorBanner");
+const errorMsg         = document.getElementById("errorMsg");
 
-const resultCard    = document.getElementById("resultCard");
-const resultInput   = document.getElementById("resultInput");
-const resultOutput  = document.getElementById("resultOutput");
-const downloadBtn   = document.getElementById("downloadBtn");
-const resetBtn      = document.getElementById("resetBtn");
+const resultInput      = document.getElementById("resultInput");
+const rgbPlaceholder   = document.getElementById("rgbPlaceholder");
+const resultOutput     = document.getElementById("resultOutput");
+const irPlaceholder    = document.getElementById("irPlaceholder");
+const irLoading        = document.getElementById("irLoading");
+const downloadBtn      = document.getElementById("downloadBtn");
+
+const detCountBadge       = document.getElementById("detCountBadge");
+const detHuman            = document.getElementById("detHuman");
+const detRaw              = document.getElementById("detRaw");
+const detRawPre           = document.getElementById("detRawPre");
+const detectionWarning    = document.getElementById("detectionWarning");
+const detectionWarningMsg = document.getElementById("detectionWarningMsg");
+const rawToggleTrack      = document.getElementById("rawToggleTrack");
+const rawToggleThumb      = document.getElementById("rawToggleThumb");
 
 let selectedFile = null;
+let rawEnabled   = false;
 
 function showError(msg) {
   errorMsg.textContent = msg;
-  errorBanner.hidden = false;
+  errorBanner.hidden   = false;
 }
 
 function hideError() {
-  errorBanner.hidden = true;
+  errorBanner.hidden   = true;
   errorMsg.textContent = "";
 }
 
-function setLoading(active) {
-  loadingOverlay.hidden = !active;
-  generateBtn.disabled  = active;
+function formatBytes(bytes) {
+  if (bytes < 1024)          return bytes + " B";
+  if (bytes < 1024 * 1024)  return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+
+function toggleRaw() {
+  rawEnabled = !rawEnabled;
+  if (rawEnabled) {
+    rawToggleTrack.style.backgroundColor = "#7c3aed";
+    rawToggleThumb.style.transform       = "translateX(16px)";
+    detHuman.hidden = true;
+    detRaw.hidden   = false;
+  } else {
+    rawToggleTrack.style.backgroundColor = "";
+    rawToggleThumb.style.transform       = "";
+    detHuman.hidden = false;
+    detRaw.hidden   = true;
+  }
 }
 
 function applyPreview(file) {
   const url = URL.createObjectURL(file);
-  previewImg.src = url;
-  dzIdle.hidden   = true;
+  previewThumb.src        = url;
+  previewName.textContent = file.name;
+  previewSize.textContent = formatBytes(file.size);
+  dzIdle.hidden    = true;
   dzPreview.hidden = false;
+
+  resultInput.src           = url;
+  resultInput.hidden        = false;
+  rgbPlaceholder.hidden     = true;
+
   generateBtn.disabled = false;
   hideError();
 }
 
-function resetUpload() {
-  selectedFile = null;
-  fileInput.value = "";
-  previewImg.src  = "";
+function clearUpload() {
+  selectedFile     = null;
+  fileInput.value  = "";
+  previewThumb.src = "";
   dzPreview.hidden = true;
   dzIdle.hidden    = false;
+
+  resultInput.hidden    = true;
+  resultInput.src       = "";
+  rgbPlaceholder.hidden = false;
+
+  resultOutput.hidden  = true;
+  resultOutput.src     = "";
+  irPlaceholder.hidden = false;
+  irLoading.hidden     = true;
+
+  downloadBtn.hidden   = true;
   generateBtn.disabled = true;
+
+  detCountBadge.textContent = "0";
+  detHuman.innerHTML = '<p style="font-size:14px;color:#9ca3af;text-align:center;padding:16px 0;">No detections yet. Generate an IR image to see results.</p>';
+  detRawPre.textContent   = "No data";
+  detectionWarning.hidden = true;
+
   hideError();
-}
-
-function resetAll() {
-  resultCard.hidden = true;
-  resultInput.src   = "";
-  resultOutput.src  = "";
-  downloadBtn.href  = "#";
-
-  
-  const badge   = document.getElementById("detCountBadge");
-  const content = document.getElementById("detectionContent");
-  const warning = document.getElementById("detectionWarning");
-  badge.textContent = "0";
-  badge.classList.remove("active");
-  content.innerHTML = "";
-  warning.hidden    = true;
-
-  resetUpload();
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function handleFile(file) {
   if (!file) return;
-
-  const allowed = ["image/jpeg", "image/png", "image/bmp", "image/tiff",
-                   "image/tif", "image/webp"];
-  if (!file.type.startsWith("image/") && !allowed.includes(file.type)) {
-    showError(`Unsupported file type: ${file.type || "unknown"}. Please upload an image.`);
-    return;
-  }
   if (file.size > 16 * 1024 * 1024) {
     showError("File too large. Maximum size is 16 MB.");
     return;
   }
-
   selectedFile = file;
   applyPreview(file);
 }
 
-const DET_COLORS = {
-  person:  "#ff376e",
-  car:     "#37b4ff",
-  bicycle: "#50f078",
-  dog:     "#ffc837",
-  truck:   "#b437ff",
-  bus:     "#ffa500",
-};
-const DET_DEFAULT_COLOR = "#ff6b35";
+browseLink.addEventListener("click", (e) => { e.stopPropagation(); fileInput.click(); });
+dropZone.addEventListener("click", () => { if (!dzIdle.hidden) fileInput.click(); });
+dropZone.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") fileInput.click(); });
+clearBtn.addEventListener("click", (e) => { e.stopPropagation(); clearUpload(); });
+fileInput.addEventListener("change", () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-function getDetColor(className) {
-  return DET_COLORS[className.toLowerCase()] || DET_DEFAULT_COLOR;
+dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+dropZone.addEventListener("dragleave", (e) => { if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove("drag-over"); });
+dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.classList.remove("drag-over"); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+document.addEventListener("dragover", (e) => e.preventDefault());
+document.addEventListener("drop",     (e) => e.preventDefault());
+
+const DET_COLORS = {
+  person:  "#7c3aed",
+  car:     "#2563eb",
+  bicycle: "#059669",
+  dog:     "#d97706",
+  truck:   "#dc2626",
+  bus:     "#db2777",
+};
+const DET_DEFAULT = "#6b7280";
+
+function getDetColor(cls) {
+  return DET_COLORS[cls.toLowerCase()] || DET_DEFAULT;
 }
 
 function renderDetections(data) {
-  const badge   = document.getElementById("detCountBadge");
-  const content = document.getElementById("detectionContent");
-  const warning = document.getElementById("detectionWarning");
-  const warnMsg = document.getElementById("detectionWarningMsg");
-
-  const predictions = data.predictions    || [];
+  const predictions = data.predictions     || [];
   const count       = data.detection_count || 0;
   const errMsg      = data.detection_error || null;
 
-  
-  badge.textContent = count;
-  badge.classList.toggle("active", count > 0);
+  detCountBadge.textContent = String(count);
+  detRawPre.textContent     = JSON.stringify(predictions, null, 2);
 
-  
   if (errMsg) {
-    warnMsg.textContent = errMsg;
-    warning.hidden = false;
+    detectionWarningMsg.textContent = errMsg;
+    detectionWarning.hidden = false;
   } else {
-    warning.hidden = true;
+    detectionWarning.hidden = true;
   }
 
-  
   if (predictions.length === 0) {
-    content.innerHTML =
-      '<p class="detection-empty">No objects detected in the generated IR image.</p>';
+    detHuman.innerHTML = '<p style="font-size:14px;color:#9ca3af;text-align:center;padding:16px 0;">No objects detected in the generated IR image.</p>';
     return;
   }
 
-  
-  const list = document.createElement("div");
-  list.className = "detection-list";
+  const classCounts = {};
+  predictions.forEach(function(p) { classCounts[p.class_name] = (classCounts[p.class_name] || 0) + 1; });
 
-  predictions.forEach(function (pred) {
-    const color = getDetColor(pred.class_name);
-    const conf  = Math.round(pred.confidence * 100);
-    const w     = pred.x2 - pred.x1;
-    const h     = pred.y2 - pred.y1;
+  let html = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">';
+  Object.entries(classCounts).forEach(function([cls, cnt]) {
+    var c = getDetColor(cls);
+    html += '<span style="font-size:12px;font-weight:700;padding:2px 10px;border-radius:4px;border:1px solid ' + c + '44;background:' + c + '11;color:' + c + ';text-transform:uppercase;letter-spacing:0.04em;">' + cls + ' &times;' + cnt + '</span>';
+  });
+  html += '</div>';
 
-    const item = document.createElement("div");
-    item.className = "detection-item";
-    item.innerHTML =
-      '<div class="detection-item-top">' +
-        '<span class="detection-class-chip" style="background:' + color + '22; border-color:' + color + '; color:' + color + '">' +
-          pred.class_name +
-        '</span>' +
-        '<span class="detection-conf-text">' + conf + '% confidence</span>' +
-      '</div>' +
-      '<div class="detection-conf-bar-wrap">' +
-        '<div class="detection-conf-bar" style="width:' + conf + '%; background:' + color + '"></div>' +
-      '</div>' +
-      '<div class="detection-coords">' +
-        '[' + pred.x1 + ', ' + pred.y1 + '] &rarr; [' + pred.x2 + ', ' + pred.y2 + ']' +
-        '&nbsp;&middot;&nbsp;' + w + '&times;' + h + ' px' +
+  predictions.forEach(function(pred) {
+    var c    = getDetColor(pred.class_name);
+    var conf = Math.round(pred.confidence * 100);
+    var w    = pred.x2 - pred.x1;
+    var h    = pred.y2 - pred.y1;
+    html +=
+      '<div style="background:#faf9ff;border:1px solid #ede9fe;border-radius:6px;padding:10px 12px;margin-bottom:8px;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">' +
+          '<span style="font-size:16px;font-weight:600;color:' + c + ';">' + pred.class_name + '</span>' +
+          '<span style="font-size:14px;color:#6b7280;font-weight:500;">' + conf + '%</span>' +
+        '</div>' +
+        '<div style="height:4px;background:#ede9fe;border-radius:4px;overflow:hidden;margin-bottom:7px;">' +
+          '<div style="height:100%;width:' + conf + '%;background:' + c + ';border-radius:4px;transition:width 0.4s ease;"></div>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#9ca3af;font-family:Consolas,monospace;">[' + pred.x1 + ', ' + pred.y1 + '] &rarr; [' + pred.x2 + ', ' + pred.y2 + '] &nbsp;&middot;&nbsp; ' + w + '&times;' + h + 'px</div>' +
       '</div>';
-
-    list.appendChild(item);
   });
 
-  content.innerHTML = "";
-  content.appendChild(list);
+  detHuman.innerHTML = html;
 }
 
-dropZone.addEventListener("click", () => fileInput.click());
-
-dropZone.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") fileInput.click();
-});
-
-fileInput.addEventListener("change", () => {
-  if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
-});
-
-dropZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  dropZone.classList.add("drag-over");
-});
-
-dropZone.addEventListener("dragleave", (e) => {
-  if (!dropZone.contains(e.relatedTarget)) {
-    dropZone.classList.remove("drag-over");
-  }
-});
-
-dropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropZone.classList.remove("drag-over");
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-});
-
-document.addEventListener("dragover",  (e) => e.preventDefault());
-document.addEventListener("drop",      (e) => e.preventDefault());
-
-generateBtn.addEventListener("click", async () => {
+generateBtn.addEventListener("click", async function() {
   if (!selectedFile) return;
 
   hideError();
-  setLoading(true);
-  resultCard.hidden = true;
+  generateBtn.disabled = true;
+  irPlaceholder.hidden = true;
+  irLoading.hidden     = false;
+  resultOutput.hidden  = true;
+  downloadBtn.hidden   = true;
 
   const formData = new FormData();
   formData.append("image", selectedFile);
 
   try {
-    const response = await fetch("/predict", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
+    const response = await fetch("/predict", { method: "POST", body: formData });
+    const data     = await response.json();
 
     if (!response.ok || data.error) {
-      showError(data.error || `Server error (${response.status})`);
+      showError(data.error || ("Server error (" + response.status + ")"));
+      irPlaceholder.hidden = false;
+      irLoading.hidden     = true;
       return;
     }
 
-    
-    const inputSrc  = `data:image/png;base64,${data.input}`;
-    const outputSrc = `data:image/png;base64,${data.output}`;
+    resultInput.src       = "data:image/png;base64," + data.input;
+    resultInput.hidden    = false;
+    rgbPlaceholder.hidden = true;
 
-    resultInput.src  = inputSrc;
-    resultOutput.src = outputSrc;
+    const outputSrc      = "data:image/png;base64," + data.output;
+    resultOutput.src     = outputSrc;
+    resultOutput.hidden  = false;
+    irLoading.hidden     = true;
 
-    
     downloadBtn.href     = outputSrc;
-    downloadBtn.download = `ir_${selectedFile.name.replace(/\.[^.]+$/, "")}.png`;
+    downloadBtn.download = "ir_" + selectedFile.name.replace(/\.[^.]+$/, "") + ".png";
+    downloadBtn.hidden   = false;
 
-    
     renderDetections(data);
 
-    resultCard.hidden = false;
-    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
-
   } catch (err) {
-    showError(`Request failed: ${err.message}`);
+    showError("Request failed: " + err.message);
+    irPlaceholder.hidden = false;
+    irLoading.hidden     = true;
   } finally {
-    setLoading(false);
+    generateBtn.disabled = false;
   }
 });
-
-resetBtn.addEventListener("click", resetAll);
