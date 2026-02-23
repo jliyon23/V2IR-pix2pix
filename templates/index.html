@@ -5,18 +5,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LLVIP Pix2Pix — Visible to Infrared</title>
+
+  <!-- Inter Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 
-<body class="bg-slate-50 min-h-screen w-full"
-  style="font-size:16px; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1e1b4b;">
+<body class="bg-slate-200 min-h-screen w-full"
+  style="font-size:16px; font-family:'Inter', system-ui, -apple-system, sans-serif; color:#1e1b4b;">
 
-  <header class="bg-gradient-to-r from-violet-700 to-violet-600 px-6 py-3 shadow-sm">
+  <header class="bg-violet-600 opacity-80 px-6 py-3 shadow-sm">
     <div class="w-full flex items-center justify-between">
       <div>
         <h1 class="text-[18px] font-bold text-white tracking-tight">LLVIP Pix2Pix</h1>
-        <p class="text-[14px] text-black mt-0.5">Visible to Infrared Image Translation</p>
+        <p class="text-[14px] text-slate-200 mt-0.5">Visible to Infrared Image Translation</p>
       </div>
       <div class="flex gap-2 flex-wrap">
         <span
@@ -46,8 +52,8 @@
           aria-label="Upload image by clicking or dragging">
           <input type="file" id="fileInput" accept="image/*" hidden />
           <div id="dzIdle" class="flex flex-col items-center py-2 pointer-events-none">
-            <svg class="text-black mb-1" width="20" height="20" fill="none" stroke="currentColor"
-              stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="text-black mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"
+              viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 7.5m0 0L7.5 12M12 7.5v9" />
             </svg>
