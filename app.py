@@ -123,4 +123,4 @@ def predict():
 
 if __name__ == "__main__":
     log.info("Starting server  →  http://127.0.0.1:%d", config.PORT)
-    app.run(host=config.HOST, port=config.PORT, debug=False)
+    app.run(host=config.HOST, port=config.PORT, debug=True)

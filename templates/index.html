@@ -16,7 +16,7 @@
     <div class="w-full flex items-center justify-between">
       <div>
         <h1 class="text-[18px] font-bold text-white tracking-tight">LLVIP Pix2Pix</h1>
-        <p class="text-[14px] text-violet-200 mt-0.5">Visible to Infrared Image Translation</p>
+        <p class="text-[14px] text-black mt-0.5">Visible to Infrared Image Translation</p>
       </div>
       <div class="flex gap-2 flex-wrap">
         <span
@@ -38,32 +38,32 @@
     <!-- LEFT: Controls -->
     <div class="bg-white border border-violet-100 rounded-md shadow-sm p-4 flex flex-col gap-4">
 
-      <h2 class="text-[16px] font-semibold text-violet-900 pb-2 border-b border-violet-100">Controls</h2>
+      <h2 class="text-[16px] font-semibold text-black pb-2 border-b border-violet-100">Controls</h2>
 
       <div class="flex flex-col gap-1.5">
-        <label class="text-[13px] font-medium text-slate-500">Upload Image</label>
+        <label class="text-[13px] font-medium text-black">Upload Image</label>
         <div id="dropZone" class="drop-zone-compact" role="button" tabindex="0"
           aria-label="Upload image by clicking or dragging">
           <input type="file" id="fileInput" accept="image/*" hidden />
           <div id="dzIdle" class="flex flex-col items-center py-2 pointer-events-none">
-            <svg class="text-violet-300 mb-1" width="20" height="20" fill="none" stroke="currentColor"
+            <svg class="text-black mb-1" width="20" height="20" fill="none" stroke="currentColor"
               stroke-width="1.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 7.5m0 0L7.5 12M12 7.5v9" />
             </svg>
-            <p class="text-[13px] text-slate-500">Drag here or <span id="browseLink"
+            <p class="text-[13px] text-black">Drag here or <span id="browseLink"
                 class="text-violet-600 font-semibold pointer-events-auto cursor-pointer hover:underline">browse</span>
             </p>
-            <p class="text-[11px] text-slate-400 mt-0.5">JPG, PNG, BMP &bull; max 16 MB</p>
+            <p class="text-[11px] text-black mt-0.5">JPG, PNG, BMP &bull; max 16 MB</p>
           </div>
           <div id="dzPreview" hidden class="flex items-center gap-2.5 px-3 py-2 w-full">
             <img id="previewThumb" src="" alt=""
               class="w-8 h-8 object-cover rounded-md flex-shrink-0 border border-violet-100" />
             <div class="flex-1 min-w-0">
-              <p id="previewName" class="text-[13px] font-medium text-slate-700 truncate"></p>
-              <p id="previewSize" class="text-[11px] text-slate-400"></p>
+              <p id="previewName" class="text-[13px] font-medium text-black truncate"></p>
+              <p id="previewSize" class="text-[11px] text-black"></p>
             </div>
-            <button id="clearBtn" class="flex-shrink-0 text-slate-300 hover:text-red-400 transition-colors p-0.5"
+            <button id="clearBtn" class="flex-shrink-0 text-black hover:text-red-400 transition-colors p-0.5"
               title="Remove file">
               <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -74,18 +74,18 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label class="text-[13px] font-medium text-slate-500">Image URL</label>
+        <label class="text-[13px] font-medium text-black">Image URL</label>
         <input type="text" placeholder="https://example.com/image.jpg" disabled
-          class="w-full text-[13px] px-2.5 py-1.5 rounded-md border border-slate-200 bg-slate-50 text-slate-400 placeholder-slate-300 cursor-not-allowed" />
-        <p class="text-[11px] text-slate-400">Coming soon</p>
+          class="w-full text-[13px] px-2.5 py-1.5 rounded-md border border-slate-200 bg-slate-50 text-black placeholder-black cursor-not-allowed" />
+        <p class="text-[11px] text-black">Coming soon</p>
       </div>
 
       <div class="flex flex-col gap-1">
         <label class="flex items-center gap-2 cursor-pointer select-none w-fit">
           <input type="checkbox" id="detectionCheckbox" checked class="w-3.5 h-3.5 cursor-pointer accent-violet-600" />
-          <span class="text-[14px] text-slate-700 font-medium">Enable Object Detection</span>
+          <span class="text-[14px] text-black font-medium">Enable Object Detection</span>
         </label>
-        <p class="text-[11px] text-slate-400 pl-[22px]">Detect objects in the generated IR image</p>
+        <p class="text-[11px] text-black pl-[22px]">Detect objects in the generated IR image</p>
       </div>
 
       <button id="generateBtn" disabled
@@ -94,7 +94,7 @@
       </button>
 
       <div id="errorBanner" hidden
-        class="flex items-start gap-2 bg-red-50 border border-red-200 text-red-600 text-[13px] px-3 py-2 rounded-md">
+        class="flex items-start gap-2 bg-red-50 border border-red-200 text-black text-[13px] px-3 py-2 rounded-md">
         <svg class="flex-shrink-0 mt-px" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
           viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -108,14 +108,14 @@
     <!-- MIDDLE: Images -->
     <div class="bg-white border border-violet-100 rounded-md shadow-sm p-4 flex flex-col gap-4">
 
-      <h2 class="text-[16px] font-semibold text-violet-900 pb-2 border-b border-violet-100">Images</h2>
+      <h2 class="text-[16px] font-semibold text-black pb-2 border-b border-violet-100">Images</h2>
 
       <div class="flex flex-col xl:flex-row items-stretch gap-4">
         <div class="flex flex-col gap-1.5 flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"
               style="box-shadow:0 0 5px rgba(96,165,250,0.6);"></span>
-            <label class="text-[13px] font-medium text-slate-500">Input &mdash; Visible (RGB)</label>
+            <label class="text-[13px] font-medium text-black">Input &mdash; Visible (RGB)</label>
           </div>
           <div class="img-box h-full min-h-[250px] w-full max-w-none">
             <div id="rgbPlaceholder" class="img-placeholder-text">No image selected</div>
@@ -127,13 +127,13 @@
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0"
               style="box-shadow:0 0 5px rgba(124,58,237,0.6);"></span>
-            <label class="text-[13px] font-medium text-slate-500">Output &mdash; Infrared (IR)</label>
+            <label class="text-[13px] font-medium text-black">Output &mdash; Infrared (IR)</label>
           </div>
           <div class="img-box h-full min-h-[250px] w-full max-w-none">
             <div id="irPlaceholder" class="img-placeholder-text">Generate to see output</div>
             <div id="irLoading" hidden class="flex flex-col items-center gap-2">
               <div class="spinner-sm"></div>
-              <span class="text-[13px] text-slate-500">Running inference...</span>
+              <span class="text-[13px] text-black">Running inference...</span>
             </div>
             <img id="resultOutput" src="" alt="Infrared output" hidden />
           </div>
@@ -151,9 +151,9 @@
     <div class="bg-white border border-violet-100 rounded-md shadow-sm p-4 flex flex-col gap-3">
 
       <div class="flex items-center justify-between pb-2 border-b border-violet-100">
-        <h2 class="text-[16px] font-semibold text-violet-900">Detection Results</h2>
+        <h2 class="text-[16px] font-semibold text-black">Detection Results</h2>
         <label class="flex items-center gap-2 cursor-pointer select-none">
-          <span class="text-[13px] text-slate-500 font-medium">Raw</span>
+          <span class="text-[13px] text-black font-medium">Raw</span>
           <div id="rawToggleTrack"
             class="relative w-8 h-4 bg-slate-200 rounded-md cursor-pointer transition-colors duration-200"
             onclick="toggleRaw()">
@@ -166,20 +166,20 @@
 
       <div class="flex items-center gap-2 bg-violet-50 border border-violet-100 rounded-md px-3 py-2">
         <span id="detCountBadge" class="text-[16px] font-bold text-violet-700">0</span>
-        <span class="text-[13px] text-violet-500 font-medium">objects detected</span>
+        <span class="text-[13px] text-black font-medium">objects detected</span>
       </div>
 
       <div id="detHuman">
-        <p class="text-[13px] text-slate-400 text-center py-4">No detections yet. Generate an IR image to see results.
+        <p class="text-[13px] text-black text-center py-4">No detections yet. Generate an IR image to see results.
         </p>
       </div>
 
       <div id="detRaw" hidden class="bg-slate-50 border border-slate-200 rounded-md p-2 max-h-72 overflow-auto">
-        <pre id="detRawPre" class="text-[11px] text-slate-500 whitespace-pre-wrap break-all">No data</pre>
+        <pre id="detRawPre" class="text-[11px] text-black whitespace-pre-wrap break-all">No data</pre>
       </div>
 
       <div id="detectionWarning" hidden
-        class="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-[13px] px-3 py-2 rounded-md">
+        class="flex items-start gap-2 bg-amber-50 border border-amber-200 text-black text-[13px] px-3 py-2 rounded-md">
         <svg class="flex-shrink-0 mt-px" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
           viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -193,7 +193,7 @@
   </main>
 
   <footer class="max-w-screen-xl mx-auto px-5 py-4">
-    <p class="text-[12px] text-slate-400 text-center">LLVIP Pix2Pix &nbsp;&middot;&nbsp; U-Net 256 Generator
+    <p class="text-[12px] text-black text-center">LLVIP Pix2Pix &nbsp;&middot;&nbsp; U-Net 256 Generator
       &nbsp;&middot;&nbsp; 200 Epochs &nbsp;&middot;&nbsp; AtoB (Visible to IR)</p>
   </footer>
 
