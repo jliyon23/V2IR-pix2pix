@@ -1,0 +1,9 @@
+# LLVIP Pix2Pix Web App — Python Dependencies
+# Install inside the llvip_pix2pix conda environment:
+#   conda activate llvip_pix2pix
+#   pip install -r requirements.txt
+
+flask>=2.3.0
+torch>=2.0.0          # already installed in llvip_pix2pix env
+torchvision>=0.15.0   # already installed in llvip_pix2pix env
+Pillow>=9.0.0         # already installed in llvip_pix2pix env

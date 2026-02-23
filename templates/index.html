@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLVIP Pix2Pix — Visible → Infrared</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <span class="logo-icon">🔥</span>
+        <div>
+          <h1 class="header-title">LLVIP Pix2Pix</h1>
+          <p class="header-subtitle">Visible → Infrared Image Translation</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span class="badge">U-Net 256</span>
+        <span class="badge">200 Epochs</span>
+        <span class="badge">256 × 256</span>
+      </div>
+    </div>
+  </header>
+
+  
+  <main class="main-content">
+
+    
+    <section class="card upload-card">
+      <h2 class="card-title">Upload Visible Image</h2>
+      <p class="card-desc">
+        Upload an RGB visible-light image. The model will generate the
+        corresponding infrared (thermal) image using the trained pix2pix generator.
+      </p>
+
+      
+      <div class="drop-zone" id="dropZone" role="button" tabindex="0"
+           aria-label="Upload image by clicking or dragging">
+        <div class="drop-zone-idle" id="dzIdle">
+          <div class="dz-icon">📁</div>
+          <p class="dz-primary">Drag &amp; drop an image here</p>
+          <p class="dz-secondary">or <span class="dz-browse">click to browse</span></p>
+          <p class="dz-hint">JPG, PNG, BMP, TIFF  ·  max 16 MB</p>
+        </div>
+        <div class="drop-zone-preview" id="dzPreview" hidden>
+          <img id="previewImg" src="" alt="Input preview" />
+          <div class="preview-overlay">
+            <span class="preview-change">🔄 Change Image</span>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" hidden />
+      </div>
+
+      
+      <button class="btn btn-primary" id="generateBtn" disabled>
+        <span class="btn-icon">⚡</span>
+        Generate IR Image
+      </button>
+
+      
+      <div class="error-banner" id="errorBanner" hidden>
+        <span class="error-icon">⚠️</span>
+        <span id="errorMsg"></span>
+      </div>
+    </section>
+
+    
+    <div class="loading-overlay" id="loadingOverlay" hidden>
+      <div class="spinner-card">
+        <div class="spinner"></div>
+        <p class="spinner-text">Generating infrared image…</p>
+        <p class="spinner-sub">Running U-Net inference</p>
+      </div>
+    </div>
+
+    
+    <section class="card result-card" id="resultCard" hidden>
+      <h2 class="card-title">Result</h2>
+
+      <div class="comparison-grid">
+
+        
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-dot dot-blue"></span>
+            <span class="panel-label">Input — Visible (RGB)</span>
+          </div>
+          <div class="panel-img-wrap">
+            <img id="resultInput" src="" alt="Input image" />
+          </div>
+        </div>
+
+        
+        <div class="comparison-arrow" aria-hidden="true">
+          <div class="arrow-line"></div>
+          <div class="arrow-label">pix2pix</div>
+          <div class="arrow-head">▶</div>
+        </div>
+
+        
+        <div class="panel panel-ir">
+          <div class="panel-header">
+            <span class="panel-dot dot-orange"></span>
+            <span class="panel-label">Output — Infrared (IR)</span>
+          </div>
+          <div class="panel-img-wrap">
+            <img id="resultOutput" src="" alt="Generated infrared image" />
+          </div>
+        </div>
+
+      </div>
+
+      
+      <div class="detection-section" id="detectionSection">
+        <div class="detection-section-header">
+          <span class="detection-section-title">
+            <span class="det-icon">🎯</span> Detected Objects
+          </span>
+          <span class="det-count-badge" id="detCountBadge">0</span>
+        </div>
+        <div id="detectionContent">
+          
+        </div>
+        <div class="detection-api-warning" id="detectionWarning" hidden>
+          <span>⚠️</span>
+          <span id="detectionWarningMsg">Detection unavailable</span>
+        </div>
+      </div>
+
+      
+      <div class="result-actions">
+        <a class="btn btn-download" id="downloadBtn" download="infrared_output.png">
+          <span>⬇</span> Download IR Image
+        </a>
+        <button class="btn btn-secondary" id="resetBtn">
+          <span>↩</span> Try Another Image
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  
+  <footer class="site-footer">
+    <p>LLVIP Pix2Pix · U-Net 256 Generator · 200 Epochs · AtoB (Visible → IR)</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
