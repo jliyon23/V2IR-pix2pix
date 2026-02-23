@@ -24,7 +24,6 @@ pip install flask pillow requests
 Run the web app:
 
 ```bash
-cd webapp
 python app.py
 ```
 
