@@ -47,10 +47,10 @@
       <h2 class="text-[16px] font-semibold text-black pb-2 border-b border-violet-100">Controls</h2>
 
       <div class="flex flex-col gap-1.5">
-        <label class="text-[13px] font-medium text-black">Upload Image</label>
+        <label class="text-[13px] font-medium text-black">Upload Image or Video</label>
         <div id="dropZone" class="drop-zone-compact" role="button" tabindex="0"
-          aria-label="Upload image by clicking or dragging">
-          <input type="file" id="fileInput" accept="image/*" hidden />
+          aria-label="Upload image or video by clicking or dragging">
+          <input type="file" id="fileInput" accept="image/*,video/*" hidden />
           <div id="dzIdle" class="flex flex-col items-center py-2 pointer-events-none">
             <svg class="text-black mb-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"
               viewBox="0 0 24 24">
@@ -60,11 +60,13 @@
             <p class="text-[13px] text-black">Drag here or <span id="browseLink"
                 class="text-violet-600 font-semibold pointer-events-auto cursor-pointer hover:underline">browse</span>
             </p>
-            <p class="text-[11px] text-black mt-0.5">JPG, PNG, BMP &bull; max 16 MB</p>
+            <p class="text-[11px] text-black mt-0.5">JPG, PNG, BMP &bull; MP4, MOV, AVI &bull; max 200 MB</p>
           </div>
           <div id="dzPreview" hidden class="flex items-center gap-2.5 px-3 py-2 w-full">
-            <img id="previewThumb" src="" alt=""
-              class="w-8 h-8 object-cover rounded-md flex-shrink-0 border border-violet-100" />
+            <div id="previewIcon"
+              class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border border-violet-100 text-violet-400">
+              <!-- image or video icon injected by JS -->
+            </div>
             <div class="flex-1 min-w-0">
               <p id="previewName" class="text-[13px] font-medium text-black truncate"></p>
               <p id="previewSize" class="text-[11px] text-black"></p>
@@ -81,9 +83,18 @@
 
       <div class="flex flex-col gap-1.5">
         <label class="text-[13px] font-medium text-black">Image URL</label>
-        <input type="text" placeholder="https://example.com/image.jpg" disabled
-          class="w-full text-[13px] px-2.5 py-1.5 rounded-md border border-slate-200 bg-slate-50 text-black placeholder-black cursor-not-allowed" />
-        <p class="text-[11px] text-black">Coming soon</p>
+        <div class="relative w-full">
+          <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg"
+            class="w-full text-[13px] pl-2.5 pr-8 py-1.5 rounded-md border border-slate-200 bg-white text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all" />
+          <button id="clearUrlBtn" hidden
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 bg-transparent p-0.5"
+            title="Clear URL">
+            <svg width="14" height="14" fill="none" class="opacity-70 hover:opacity-100" stroke="currentColor"
+              stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="flex flex-col gap-1">
@@ -111,12 +122,28 @@
 
     </div>
 
-    <!-- MIDDLE: Images -->
+    <!-- MIDDLE: Images / Videos -->
     <div class="bg-white border border-violet-100 rounded-md shadow-sm p-4 flex flex-col gap-4">
 
-      <h2 class="text-[16px] font-semibold text-black pb-2 border-b border-violet-100">Images</h2>
+      <h2 class="text-[16px] font-semibold text-black pb-2 border-b border-violet-100">
+        <span id="mediaTitle">Images</span>
+      </h2>
+
+      <!-- Video Progress Bar (hidden initially) -->
+      <div id="videoProgress" hidden class="flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span id="progressStage" class="text-[13px] font-medium text-violet-700">Processing...</span>
+          <span id="progressCounter" class="text-[12px] text-black">0 / 0</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div id="progressBar" class="h-2 bg-violet-500 rounded-full transition-all duration-300" style="width:0%">
+          </div>
+        </div>
+      </div>
 
       <div class="flex flex-col xl:flex-row items-stretch gap-4">
+
+        <!-- Input panel: supports both image and video -->
         <div class="flex flex-col gap-1.5 flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"
@@ -125,10 +152,24 @@
           </div>
           <div class="img-box h-full min-h-[250px] w-full max-w-none">
             <div id="rgbPlaceholder" class="img-placeholder-text">No image selected</div>
+
+            <!-- Image mode -->
             <img id="resultInput" src="" alt="Visible input" hidden />
+
+            <!-- Video mode -->
+            <video id="videoInput" controls hidden class="w-full h-full object-contain">
+              Your browser does not support video.
+            </video>
+
+            <!-- Video loading spinner -->
+            <div id="videoInputLoading" hidden class="flex flex-col items-center gap-3">
+              <div class="video-spinner"></div>
+              <span id="videoInputStage" class="text-[13px] text-black font-medium">Processing video...</span>
+            </div>
           </div>
         </div>
 
+        <!-- Output panel -->
         <div class="flex flex-col gap-1.5 flex-1 min-w-0">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0"
@@ -137,11 +178,20 @@
           </div>
           <div class="img-box h-full min-h-[250px] w-full max-w-none">
             <div id="irPlaceholder" class="img-placeholder-text">Generate to see output</div>
+
+            <!-- Image loading spinner -->
             <div id="irLoading" hidden class="flex flex-col items-center gap-2">
               <div class="spinner-sm"></div>
               <span class="text-[13px] text-black">Running inference...</span>
             </div>
+
+            <!-- Image mode -->
             <img id="resultOutput" src="" alt="Infrared output" hidden />
+
+            <!-- Video mode -->
+            <video id="videoOutput" controls hidden class="w-full h-full object-contain">
+              Your browser does not support video.
+            </video>
           </div>
         </div>
       </div>

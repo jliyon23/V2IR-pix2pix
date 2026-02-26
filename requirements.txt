@@ -4,6 +4,9 @@
 #   pip install -r requirements.txt
 
 flask>=2.3.0
+opencv-python>=4.8.0    # Video I/O for frame extraction and encoding
+imageio>=2.33.0         # H.264 video encoding via ffmpeg
+imageio-ffmpeg>=0.4.9   # Bundled ffmpeg binary for imageio
 torch>=2.0.0          # already installed in llvip_pix2pix env
 torchvision>=0.15.0   # already installed in llvip_pix2pix env
 Pillow>=9.0.0         # already installed in llvip_pix2pix env
